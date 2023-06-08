@@ -214,7 +214,7 @@ export default {
   },
   methods: {
     clickPagination2(pageNum) {
-      axios.get('http://localhost:8080/applies/' + this.$store.state.recruiterId + '/search?status=' + this.value + '&page=' + pageNum)
+      axios.get('http://localhost:8000/applies/' + this.$store.state.recruiterId + '/search?status=' + this.value + '&page=' + pageNum)
           .then((response) => {
             this.tableData = response.data.content;
 
@@ -224,18 +224,18 @@ export default {
             this.error.push(e);
           })
     },
-    // clickPagination(pageNum) {
-    //   axios.get('http://localhost:8080/applies/has-status/'+this.$store.state.recruiterId +'?page=' + pageNum)
-    //       .then((response) => {
-    //         console.log('response.data', response.data.content)
-    //         this.tableData = response.data.content;
-    //         this.loading = false;
-    //       })
-    //       .catch((e) => {
-    //         this.error.push(e);
-    //       })
-    //
-    // },
+    clickPagination(pageNum) {
+      axios.get('http://localhost:8000/candidate/applies/has-status/'+this.$store.state.recruiterId +'?page=' + pageNum)
+          .then((response) => {
+            console.log('response.data', response.data.content)
+            this.tableData = response.data.content;
+            this.loading = false;
+          })
+          .catch((e) => {
+            this.error.push(e);
+          })
+
+    },
     setColorStatus({row, rowIndex, columnIndex}) {
       if (columnIndex === 3 && row.status === 'Accepted') {
         return 'accept';
@@ -244,24 +244,24 @@ export default {
       }
       return '';
     },
-    // loadData() {
-    //   this.loading = true;
-    //   console.log('recruiterId: ',this.$store.state.recruiterId)
-    //   axios.get('http://localhost:8080/applies/has-status/'+this.$store.state.recruiterId)
-    //       .then((response) => {
-    //         console.log('response.data', response.data.content)
-    //         this.tableData = response.data.content;
-    //         this.totalElement = response.data.totalElements;
-    //         this.size = response.data.size;
-    //         this.loading = false;
-    //       })
-    //       .catch((e) => {
-    //         this.error.push(e);
-    //       })
-    // },
+    loadData() {
+      this.loading = true;
+      console.log('recruiterId: ',this.$store.state.recruiterId)
+      axios.get('http://localhost:8000/candidate/applies/has-status/' + this.$store.state.recruiterId)
+          .then((response) => {
+            console.log('response.data', response.data.content)
+            this.tableData = response.data.content;
+            this.totalElement = response.data.totalElements;
+            this.size = response.data.size;
+            this.loading = false;
+          })
+          .catch((e) => {
+            this.error.push(e);
+          })
+    },
     // countValueBadge() {
     //   this.loading = true;
-    //   axios.get('http://localhost:8080/applies/has-no-status/'+this.$store.state.recruiterId)
+    //   axios.get('http://localhost:8000/candidate/applies/has-no-status/'+this.$store.state.recruiterId)
     //       .then((response) => {
     //         console.log('response.data', response.data.content)
     //         this.valueBadge = response.data.content;
