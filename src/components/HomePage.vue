@@ -70,12 +70,6 @@
             <el-form-item :label-width="formLabelWidth" label="Name">
               <el-input v-model="candidate.name" autocomplete="off" class="input" readonly="true"></el-input>
             </el-form-item>
-            <el-form-item :label-width="formLabelWidth" label="Education">
-              <el-input v-model="candidate.education" autocomplete="off" readonly="true"></el-input>
-            </el-form-item>
-            <el-form-item :label-width="formLabelWidth" label="Title">
-              <el-input v-model="candidate.level" autocomplete="off" readonly="true"></el-input>
-            </el-form-item>
             <el-form-item :label-width="formLabelWidth" label="DoB">
               <el-input v-model="candidate.dob" autocomplete="off" readonly="true"></el-input>
             </el-form-item>
@@ -107,9 +101,6 @@
           <el-form :model="job" style="width: 550px;">
             <el-form-item :label-width="formLabelWidth" label="Title">
               <el-input v-model="job.title" autocomplete="off" class="input" readonly="true"></el-input>
-            </el-form-item>
-            <el-form-item :label-width="formLabelWidth" label="Type">
-              <el-input v-model="job.type" autocomplete="off" readonly="true"></el-input>
             </el-form-item>
             <el-form-item :label-width="formLabelWidth" label="Level">
               <el-input v-model="job.level" autocomplete="off" readonly="true"></el-input>
@@ -214,7 +205,7 @@ export default {
   },
   methods: {
     clickPagination2(pageNum) {
-      axios.get('http://localhost:8000/applies/' + this.$store.state.recruiterId + '/search?status=' + this.value + '&page=' + pageNum)
+      axios.get('http://localhost:8000/candidate/apply/applies/' + this.$store.state.recruiterId + '/search?status=' + this.value + '&page=' + pageNum)
           .then((response) => {
             this.tableData = response.data.content;
 
@@ -225,7 +216,7 @@ export default {
           })
     },
     clickPagination(pageNum) {
-      axios.get('http://localhost:8000/candidate/applies/has-status/'+this.$store.state.recruiterId +'?page=' + pageNum)
+      axios.get('http://localhost:8000/candidate/apply/applies/has-status/'+this.$store.state.recruiterId +'?page=' + pageNum)
           .then((response) => {
             console.log('response.data', response.data.content)
             this.tableData = response.data.content;
@@ -247,7 +238,7 @@ export default {
     loadData() {
       this.loading = true;
       console.log('recruiterId: ',this.$store.state.recruiterId)
-      axios.get('http://localhost:8000/candidate/applies/has-status/' + this.$store.state.recruiterId)
+      axios.get('http://localhost:8000/candidate/apply/applies/has-status/' + this.$store.state.recruiterId)
           .then((response) => {
             console.log('response.data', response.data.content)
             this.tableData = response.data.content;
@@ -259,21 +250,21 @@ export default {
             this.error.push(e);
           })
     },
-    // countValueBadge() {
-    //   this.loading = true;
-    //   axios.get('http://localhost:8000/candidate/applies/has-no-status/'+this.$store.state.recruiterId)
-    //       .then((response) => {
-    //         console.log('response.data', response.data.content)
-    //         this.valueBadge = response.data.content;
-    //         this.$store.dispatch("updateNumberRow", this.valueBadge.length)
-    //         this.loading = false;
-    //       })
-    //       .catch((e) => {
-    //         this.error.push(e);
-    //       })
-    // },
+    countValueBadge() {
+      this.loading = true;
+      axios.get('http://localhost:8000/candidate/apply/applies/has-no-status/'+this.$store.state.recruiterId)
+          .then((response) => {
+            console.log('response.data', response.data.content)
+            this.valueBadge = response.data.content;
+            this.$store.dispatch("updateNumberRow", this.valueBadge.length)
+            this.loading = false;
+          })
+          .catch((e) => {
+            this.error.push(e);
+          })
+    },
     select() {
-      axios.get('http://localhost:8080/applies/' + this.$store.state.recruiterId + '/search?status=' + this.value)
+      axios.get('http://localhost:8000/candidate/apply/applies/' + this.$store.state.recruiterId + '/search?status=' + this.value)
           .then((response) => {
             console.log('response.data', response.data.content)
             this.tableData = response.data.content;
@@ -287,7 +278,7 @@ export default {
     },
     showInfoDialog(row, column, cell, event) {
       if (column.label === 'Candidate') {
-        axios.get('http://localhost:8080/candidates/candidate-by-apply-id/' + row.id)
+        axios.get('http://localhost:8000/candidate/candidate-by-apply-id/' + row.id)
             .then((response) => {
               console.log('response.data', response.data.data)
               this.candidate = response.data.data;
@@ -301,7 +292,7 @@ export default {
       }
       if (column.label === 'Job') {
         this.jobDialogVisible = true
-        axios.get('http://localhost:8080/jobs/job-by-apply-id/' + row.id)
+        axios.get('http://localhost:8000/recruit/job/jobs/job-by-apply-id/' + row.id)
             .then((response) => {
               console.log('response.data', response.data.data)
               this.job = response.data.data;

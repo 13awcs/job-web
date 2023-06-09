@@ -56,12 +56,6 @@
             <el-form-item :label-width="formLabelWidth" label="Name">
               <el-input v-model="candidate.name" autocomplete="off" class="input" readonly="true"></el-input>
             </el-form-item>
-            <el-form-item :label-width="formLabelWidth" label="Education">
-              <el-input v-model="candidate.education" autocomplete="off" readonly="true"></el-input>
-            </el-form-item>
-            <el-form-item :label-width="formLabelWidth" label="Title">
-              <el-input v-model="candidate.level" autocomplete="off" readonly="true"></el-input>
-            </el-form-item>
             <el-form-item :label-width="formLabelWidth" label="DoB">
               <el-input v-model="candidate.dob" autocomplete="off" readonly="true"></el-input>
             </el-form-item>
@@ -93,9 +87,6 @@
           <el-form :model="job" style="width: 550px;">
             <el-form-item :label-width="formLabelWidth" label="Title">
               <el-input v-model="job.title" autocomplete="off" class="input" readonly="true"></el-input>
-            </el-form-item>
-            <el-form-item :label-width="formLabelWidth" label="Type">
-              <el-input v-model="job.type" autocomplete="off" readonly="true"></el-input>
             </el-form-item>
             <el-form-item :label-width="formLabelWidth" label="Level">
               <el-input v-model="job.level" autocomplete="off" readonly="true"></el-input>
@@ -186,55 +177,67 @@ export default {
 
   },
   methods: {
-    // loadData() {
-    //   this.loading = true;
-    //   axios.get('http://localhost:8080/applies/has-no-status/'+this.$store.state.recruiterId)
-    //       .then((response) => {
-    //         console.log('response.data',response.data.content)
-    //         this.tableData = response.data.content;
-    //         this.totalElement = response.data.totalElements;
-    //         this.size = response.data.size;
-    //         try {
-    //           this.$store.dispatch("updateNumberRow", this.tableData.length)
-    //         }catch (e){
-    //           console.log(e)
-    //         }
-    //         // console.log('chay den day')
-    //         // this.$store.dispatch("updateNumberRow", this.tableData.length)
-    //         // console.log('chay qua day')
-    //         this.loading = false;
-    //       })
-    //       .catch((e) => {
-    //         this.error.push(e);
-    //       })
-    // },
-    // clickPagination(pageNum) {
-    //   axios.get('http://localhost:8080/applies/has-no-status/'+this.$store.state.recruiterId +'?page=' + pageNum)
-    //       .then((response) => {
-    //         console.log('response.data', response.data.content)
-    //         this.tableData = response.data.content;
-    //         this.loading = false;
-    //       })
-    //       .catch((e) => {
-    //         this.error.push(e);
-    //       })
-    //
-    // },
+    loadData() {
+      this.loading = true;
+      axios.get('http://localhost:8000/candidate/apply/applies/has-no-status/'+this.$store.state.recruiterId)
+          .then((response) => {
+            console.log('response.data',response.data.content)
+            this.tableData = response.data.content;
+            this.totalElement = response.data.totalElements;
+            this.size = response.data.size;
+            try {
+              this.$store.dispatch("updateNumberRow", this.tableData.length)
+            }catch (e){
+              console.log(e)
+            }
+            this.loading = false;
+          })
+          .catch((e) => {
+            this.error.push(e);
+          })
+    },
+    clickPagination(pageNum) {
+      axios.get('http://localhost:8000/candidate/apply/applies/has-no-status/'+this.$store.state.recruiterId +'?page=' + pageNum)
+          .then((response) => {
+            console.log('response.data', response.data.content)
+            this.tableData = response.data.content;
+            this.loading = false;
+          })
+          .catch((e) => {
+            this.error.push(e);
+          })
+
+    },
+    countValueBadge() {
+      this.loading = true;
+      axios.get('http://localhost:8000/candidate/apply/applies/has-no-status/'+this.$store.state.recruiterId)
+          .then((response) => {
+            console.log('response.data', response.data.content)
+            this.valueBadge = response.data.content;
+            this.$store.dispatch("updateNumberRow", this.valueBadge.length)
+            this.loading = false;
+          })
+          .catch((e) => {
+            this.error.push(e);
+          })
+    },
     accept(index,row) {
-      axios.post('http://localhost:8080/applies/edit/'+row.id+'?status=Accepted')
+      axios.post('http://localhost:8000/candidate/apply/applies/edit/'+row.id+'?status=Accepted')
       this.tableData.splice(index, 1)
+      this.countValueBadge();
       console.log('count : ',this.tableData.length)
     },
 
     reject(index,row) {
-      axios.post('http://localhost:8080/applies/edit/'+row.id+'?status=Rejected')
+      axios.post('http://localhost:8000/candidate/apply/applies/edit/'+row.id+'?status=Rejected')
       this.tableData.splice(index, 1)
+      this.countValueBadge();
       console.log('count : ',this.tableData.length)
 
     },
     showInfoDialog(row, column, cell, event) {
       if (column.label === 'Candidate') {
-        axios.get('http://localhost:8080/candidates/candidate-by-apply-id/' + row.id)
+        axios.get('http://localhost:8000/candidate/candidate-by-apply-id/' + row.id)
             .then((response) => {
               console.log('response.data', response.data.data)
               this.candidate = response.data.data;
@@ -247,8 +250,8 @@ export default {
         this.centerDialogVisible = true
       }
       if (column.label === 'Job') {
-
-        axios.get('http://localhost:8080/jobs/job-by-apply-id/' + row.id)
+        this.jobDialogVisible = true
+        axios.get('http://localhost:8000/recruit/job/jobs/job-by-apply-id/' + row.id)
             .then((response) => {
               console.log('response.data', response.data.data)
               this.job = response.data.data;
@@ -258,7 +261,6 @@ export default {
             .catch((e) => {
               this.error.push(e);
             })
-        this.jobDialogVisible = true
 
       }
     }

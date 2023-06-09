@@ -119,6 +119,7 @@ export default {
   },
   mounted() {
     this.loadData(this.value)
+    this.getTopJob()
   },
   methods: {
     loadData(year) {
@@ -136,66 +137,66 @@ export default {
                 })
           })
     },
-    // countValueBadge() {
-    //   this.loading = true;
-    //   axios.get('http://localhost:8080/admin/jobs-not-active')
-    //       .then((response) => {
-    //         console.log('response.data', response.data.data)
-    //         this.tableData = response.data.data;
-    //         this.$store.dispatch("updateNumberRow", this.tableData.length)
-    //         this.loading = false;
-    //       })
-    //       .catch((e) => {
-    //         this.error.push(e);
-    //       })
-    // },
-    // getTopJob() {
-    //   axios.get('http://localhost:8080/admin/apply/statistic/top-job')
-    //       .then((response) => {
-    //         this.form = {
-    //           first: 'Job',
-    //           second: 'Recruiter',
-    //           third: 'Created At',
-    //           four: 'Amount Apply',
-    //         }
-    //         this.props = {
-    //           first: 'title',
-    //           second: 'name',
-    //           third: 'createdAt',
-    //           four: 'amount',
-    //         },
-    //             console.log('response.data', response.data.content)
-    //         this.tableData = response.data.content;
-    //         this.totalElement = response.data.totalElements;
-    //         this.size = response.data.size;
-    //       })
-    //       .catch((e) => {
-    //         this.error.push(e);
-    //       })
-    // },
-    // getTopRecruiter() {
-    //   axios.get('http://localhost:8080/admin/recruiter/get-top')
-    //       .then((response) => {
-    //         this.form = {
-    //           first: 'Name',
-    //           second: 'Dob',
-    //           third: 'Company',
-    //           four: 'Amount Job',
-    //         }
-    //         this.props = {
-    //           first: 'name',
-    //           second: 'dob',
-    //           third: 'company',
-    //           four: 'amount',
-    //         },
-    //             console.log('response.data', response.data.data)
-    //         this.tableData = response.data.data;
-    //         this.tableData.s
-    //       })
-    //       .catch((e) => {
-    //         this.error.push(e);
-    //       })
-    // },
+    countValueBadge() {
+      this.loading = true;
+      axios.get('http://localhost:8000/recruit/job/admin/jobs-not-active')
+          .then((response) => {
+            console.log('response.data', response.data.data)
+            this.tableData = response.data.data;
+            this.$store.dispatch("updateNumberRow", this.tableData.length)
+            this.loading = false;
+          })
+          .catch((e) => {
+            this.error.push(e);
+          })
+    },
+    getTopJob() {
+      axios.get('http://localhost:8000/recruit/job/admin/statistic/top-job')
+          .then((response) => {
+            this.form = {
+              first: 'Job',
+              second: 'Recruiter',
+              third: 'Created At',
+              four: 'Amount Apply',
+            }
+            this.props = {
+              first: 'title',
+              second: 'name',
+              third: 'createAt',
+              four: 'amount',
+            },
+                console.log('response.data', response.data.content)
+            this.tableData = response.data.content;
+            this.totalElement = response.data.totalElements;
+            this.size = response.data.size;
+          })
+          .catch((e) => {
+            this.error.push(e);
+          })
+    },
+    getTopRecruiter() {
+      axios.get('http://localhost:8000/recruit/recruiter/admin/get-top')
+          .then((response) => {
+            this.form = {
+              first: 'Name',
+              second: 'Dob',
+              third: 'Company',
+              four: 'Amount Job',
+            }
+            this.props = {
+              first: 'name',
+              second: 'dob',
+              third: 'company',
+              four: 'amount',
+            },
+                console.log('response.data', response.data.data)
+            this.tableData = response.data.data;
+            this.tableData.s
+          })
+          .catch((e) => {
+            this.error.push(e);
+          })
+    },
   }
 }
 </script>

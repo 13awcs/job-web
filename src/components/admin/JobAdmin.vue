@@ -94,9 +94,6 @@
             <el-form-item :label-width="formLabelWidth" label="Title">
               <el-input v-model="job.title" autocomplete="off" class="input" readonly="true"></el-input>
             </el-form-item>
-            <el-form-item :label-width="formLabelWidth" label="Type">
-              <el-input v-model="job.type" autocomplete="off" readonly="true"></el-input>
-            </el-form-item>
             <el-form-item :label-width="formLabelWidth" label="Level">
               <el-input v-model="job.level" autocomplete="off" readonly="true"></el-input>
             </el-form-item>
@@ -179,39 +176,39 @@ export default {
         this.loadData();
       }
     },
-    // currentPage() {
-    //   this.clickPagination(this.currentPage-1);
-    // }
+    currentPage() {
+      this.clickPagination(this.currentPage-1);
+    }
 
   },
   methods: {
-    // loadData() {
-    //   this.loading = true;
-    //   axios.get('http://localhost:8080/admin/jobs-not-active')
-    //       .then((response) => {
-    //         console.log('response.data',response.data.data)
-    //         this.tableData = response.data.data;
-    //         this.$store.dispatch("updateNumberRow", this.tableData.length)
-    //         this.loading = false;
-    //       })
-    //       .catch((e) => {
-    //         this.error.push(e);
-    //       })
-    // },
+    loadData() {
+      this.loading = true;
+      axios.get('http://localhost:8000/recruit/job/admin/jobs-not-active')
+          .then((response) => {
+            console.log('response.data',response.data.data)
+            this.tableData = response.data.data;
+            this.$store.dispatch("updateNumberRow", this.tableData.length)
+            this.loading = false;
+          })
+          .catch((e) => {
+            this.error.push(e);
+          })
+    },
     accept(index,row) {
-      axios.post('http://localhost:8080/admin/jobs/set-active/'+row.id+'?active=true')
+      axios.post('http://localhost:8000/recruit/job/admin/set-active/'+row.id+'?active=true')
       this.tableData.splice(index, 1)
       console.log('count : ',this.tableData.length)
     },
 
     reject(index,row) {
-      axios.post('http://localhost:8080/admin/jobs/set-active/'+row.id+'?active=false')
+      axios.post('http://localhost:8000/recruit/job/admin/set-active/'+row.id+'?active=false')
       this.tableData.splice(index, 1)
       console.log('count : ',this.tableData.length)
 
     },
     disable() {
-      axios.post('http://localhost:8080/admin//disable-recruiter/'+this.form.id+'?disable=true')
+      axios.post('http://localhost:8080/admin/disable-recruiter/'+this.form.id+'?disable=true')
       console.log('vao day : ',this.form.id)
       this.centerDialogVisible = false
     },
@@ -223,7 +220,7 @@ export default {
     showInfoDialog(row, column, cell, event) {
       if (column.label === 'Recruiter') {
         this.form.id = row.id
-        axios.get('http://localhost:8080/admin/recruiter/' + row.id)
+        axios.get('http://localhost:8000/recruit/recruiter/admin/recruiter/' + row.id)
             .then((response) => {
               console.log('response.data', response.data.data)
               this.recruiter = response.data.data;
@@ -235,7 +232,7 @@ export default {
         this.centerDialogVisible = true
       }
       if (column.label === 'Job') {
-        axios.get('http://localhost:8080/jobs/' + row.id)
+        axios.get('http://localhost:8000/recruit/job/' + row.id)
             .then((response) => {
               console.log('response.data', response.data)
               this.job = response.data;
